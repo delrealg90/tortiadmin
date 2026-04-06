@@ -7,6 +7,7 @@ import { VitePWA } from 'vite-plugin-pwa';
 export default defineConfig(({mode}) => {
   const env = loadEnv(mode, '.', '');
   return {
+    base: '/tortiadmin/',
     plugins: [
       react(), 
       tailwindcss(),
@@ -21,7 +22,7 @@ export default defineConfig(({mode}) => {
           theme_color: '#f97316',
           background_color: '#0a0a0a',
           display: 'standalone',
-          start_url: '/',
+          start_url: './',
           icons: [
             {
               src: 'https://picsum.photos/seed/torti/192/192',
