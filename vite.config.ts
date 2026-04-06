@@ -30,13 +30,13 @@ export default defineConfig(({mode}) => {
               src: 'https://picsum.photos/seed/torti/192/192',
               sizes: '192x192',
               type: 'image/png',
-              purpose: 'any maskable'
+              purpose: 'any'
             },
             {
               src: 'https://picsum.photos/seed/torti/512/512',
               sizes: '512x512',
               type: 'image/png',
-              purpose: 'any maskable'
+              purpose: 'maskable'
             }
           ]
         }
