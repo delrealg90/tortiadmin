@@ -13,6 +13,7 @@ export default defineConfig(({mode}) => {
       tailwindcss(),
       VitePWA({
         registerType: 'autoUpdate',
+        injectRegister: 'auto',
         manifestFilename: 'manifest.json',
         includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'mask-icon.svg'],
         manifest: {
@@ -23,6 +24,7 @@ export default defineConfig(({mode}) => {
           background_color: '#0a0a0a',
           display: 'standalone',
           start_url: './',
+          scope: './',
           icons: [
             {
               src: 'https://picsum.photos/seed/torti/192/192',
