@@ -248,6 +248,38 @@ const AuthContext = createContext<{
 
 const useAuth = () => useContext(AuthContext);
 
+// --- PWA Install Hook ---
+function usePWAInstall() {
+  const [installPrompt, setInstallPrompt] = useState<any>(null);
+  const [isInstallable, setIsInstallable] = useState(false);
+
+  useEffect(() => {
+    const handler = (e: any) => {
+      e.preventDefault();
+      setInstallPrompt(e);
+      setIsInstallable(true);
+    };
+
+    window.addEventListener('beforeinstallprompt', handler);
+
+    return () => {
+      window.removeEventListener('beforeinstallprompt', handler);
+    };
+  }, []);
+
+  const install = async () => {
+    if (!installPrompt) return;
+    installPrompt.prompt();
+    const { outcome } = await installPrompt.userChoice;
+    if (outcome === 'accepted') {
+      setIsInstallable(false);
+      setInstallPrompt(null);
+    }
+  };
+
+  return { isInstallable, install };
+}
+
 // --- Components ---
 
 const LoadingScreen = () => (
@@ -312,6 +344,7 @@ const Navbar = () => {
   const { user, logout } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
   const [isOnline, setIsOnline] = useState(navigator.onLine);
+  const { isInstallable, install } = usePWAInstall();
 
   useEffect(() => {
     const handleOnline = () => setIsOnline(true);
@@ -350,6 +383,15 @@ const Navbar = () => {
           </div>
           
           <div className="hidden md:flex items-center space-x-6">
+            {isInstallable && (
+              <button 
+                onClick={install}
+                className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-xl text-xs font-bold transition-all shadow-lg shadow-green-500/20 flex items-center"
+              >
+                <Plus className="w-3 h-3 mr-2" />
+                Instalar App
+              </button>
+            )}
             {user?.subscription === 'free' && (
               <button 
                 onClick={async () => {
@@ -396,6 +438,15 @@ const Navbar = () => {
             exit={{ opacity: 0, y: -20 }}
             className="md:hidden bg-[#111] border-b border-white/5 px-4 py-4 space-y-4"
           >
+            {isInstallable && (
+              <button 
+                onClick={install}
+                className="w-full flex items-center justify-center space-x-2 bg-green-500 text-white px-4 py-3 rounded-xl font-bold"
+              >
+                <Plus className="w-4 h-4" />
+                <span>Instalar Aplicación</span>
+              </button>
+            )}
             <div className="flex flex-col">
               <span className="text-sm font-medium text-white">{user?.displayName}</span>
               <span className="text-xs text-gray-400 capitalize">{user?.role}</span>

@@ -6,8 +6,10 @@ import { VitePWA } from 'vite-plugin-pwa';
 
 export default defineConfig(({mode}) => {
   const env = loadEnv(mode, '.', '');
+  const isGitHubPages = process.env.GITHUB_ACTIONS === 'true' || mode === 'production';
+  
   return {
-    base: '/tortiadmin/',
+    base: isGitHubPages ? '/tortiadmin/' : '/',
     plugins: [
       react(), 
       tailwindcss(),
@@ -26,6 +28,12 @@ export default defineConfig(({mode}) => {
           start_url: './',
           scope: './',
           icons: [
+            {
+              src: 'https://picsum.photos/seed/torti/144/144',
+              sizes: '144x144',
+              type: 'image/png',
+              purpose: 'any'
+            },
             {
               src: 'https://picsum.photos/seed/torti/192/192',
               sizes: '192x192',
