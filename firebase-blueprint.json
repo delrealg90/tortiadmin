@@ -1,0 +1,78 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "App user with role and subscription status.",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "email": { "type": "string" },
+        "displayName": { "type": "string" },
+        "role": { "type": "string", "enum": ["owner", "delivery", "counter"] },
+        "subscription": { "type": "string", "enum": ["free", "premium"] },
+        "ownerId": { "type": "string", "description": "UID of the owner who created this staff member." },
+        "hasSeenTutorial": { "type": "boolean", "description": "Whether the user has completed the onboarding tutorial." }
+      },
+      "required": ["uid", "email", "role"]
+    },
+    "Inventory": {
+      "title": "Inventory",
+      "description": "Stock levels for products like corn, flour, gas, etc.",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "quantity": { "type": "number" },
+        "unit": { "type": "string" },
+        "threshold": { "type": "number", "description": "Low stock alert threshold." },
+        "lastUpdated": { "type": "string", "format": "date-time" }
+      },
+      "required": ["name", "quantity", "unit"]
+    },
+    "Sale": {
+      "title": "Sale",
+      "description": "Record of a sale from counter or delivery.",
+      "type": "object",
+      "properties": {
+        "type": { "type": "string", "enum": ["counter", "delivery"] },
+        "amount": { "type": "number" },
+        "items": { "type": "array" },
+        "timestamp": { "type": "string", "format": "date-time" },
+        "staffId": { "type": "string" },
+        "storeId": { "type": "string", "description": "Only for delivery sales." }
+      },
+      "required": ["type", "amount", "timestamp", "staffId"]
+    },
+    "Expense": {
+      "title": "Expense",
+      "description": "Daily expenses like gas, electricity, salaries.",
+      "type": "object",
+      "properties": {
+        "description": { "type": "string" },
+        "amount": { "type": "number" },
+        "category": { "type": "string" },
+        "timestamp": { "type": "string", "format": "date-time" },
+        "notes": { "type": "string" },
+        "imageUrl": { "type": "string", "description": "Base64 encoded image of the receipt." }
+      },
+      "required": ["description", "amount", "timestamp"]
+    },
+    "Store": {
+      "title": "Store",
+      "description": "Client stores for delivery routes.",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "address": { "type": "string" },
+        "ownerId": { "type": "string" }
+      },
+      "required": ["name", "ownerId"]
+    }
+  },
+  "firestore": {
+    "/users/{uid}": { "schema": "User", "description": "User profiles." },
+    "/owners/{ownerId}/inventory/{itemId}": { "schema": "Inventory", "description": "Inventory items per owner." },
+    "/owners/{ownerId}/sales/{saleId}": { "schema": "Sale", "description": "Sales records per owner." },
+    "/owners/{ownerId}/expenses/{expenseId}": { "schema": "Expense", "description": "Expense records per owner." },
+    "/owners/{ownerId}/stores/{storeId}": { "schema": "Store", "description": "Customer stores for deliveries." }
+  }
+}

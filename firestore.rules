@@ -1,0 +1,40 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Helper functions
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+    
+    function getUserData() {
+      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data;
+    }
+    
+    function isStaffOf(ownerId) {
+      return isAuthenticated() && getUserData().ownerId == ownerId;
+    }
+
+    function isAdmin() {
+      return isAuthenticated() && (
+        getUserData().role == 'owner' || 
+        request.auth.token.email == "delrealg90@gmail.com"
+      );
+    }
+
+    // User profiles
+    match /users/{uid} {
+      allow read: if isAuthenticated();
+      allow create: if isAuthenticated() && request.auth.uid == uid;
+      allow update: if isAuthenticated() && (request.auth.uid == uid || isAdmin());
+    }
+
+    // Owner data
+    match /owners/{ownerId}/{collectionName}/{docId} {
+      allow read, write: if isOwner(ownerId) || isStaffOf(ownerId);
+    }
+  }
+}
