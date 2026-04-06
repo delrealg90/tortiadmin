@@ -1,0 +1,21 @@
+name: Android Package Generation
+
+on:
+  workflow_run:
+    workflows: ["Deploy to GitHub Pages"]
+    types: [completed]
+
+jobs:
+  generate-android:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: PWA-to-Android
+        uses: pwa-builder/pwa-to-app-action@v2
+        with:
+          # Esta URL se autogenera cuando Pages está activo
+          manifest-url: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/manifest.json
+          platform: android

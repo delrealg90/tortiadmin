@@ -12,25 +12,25 @@ export default defineConfig(({mode}) => {
       tailwindcss(),
       VitePWA({
         registerType: 'autoUpdate',
+        manifestFilename: 'manifest.json',
         includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'mask-icon.svg'],
         manifest: {
           name: 'TortiAdmin Pro',
           short_name: 'TortiAdmin',
-          description: 'Gestión profesional para tortillerías',
+          description: 'Administración profesional para tortillerías',
           theme_color: '#f97316',
+          background_color: '#0a0a0a',
+          display: 'standalone',
+          start_url: '/',
           icons: [
             {
-              src: 'pwa-192x192.png',
+              src: 'https://picsum.photos/seed/torti/192/192',
               sizes: '192x192',
-              type: 'image/png'
+              type: 'image/png',
+              purpose: 'any maskable'
             },
             {
-              src: 'pwa-512x512.png',
-              sizes: '512x512',
-              type: 'image/png'
-            },
-            {
-              src: 'pwa-512x512.png',
+              src: 'https://picsum.photos/seed/torti/512/512',
               sizes: '512x512',
               type: 'image/png',
               purpose: 'any maskable'
